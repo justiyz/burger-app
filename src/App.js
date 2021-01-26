@@ -2,38 +2,72 @@ import React, { Component } from 'react';
 import './App.css';
 import Person from './Person/Person';
 
+
 class App extends Component {
-    state =  {
+
+
+    state = {
         persons: [
-            { name: 'Inyang', age: 20 },
-            { name: 'Ernest', age: 25 },
-            { name: 'Imeh', age: 30 }
+            {id: 'a1', name: 'Bellion', age: 45},
+            {id: 'a2', name: 'Justice', age: 26},
+            {id: 'a3', name: 'Jon', age: 33}
         ],
-        otherState: 'some other value'
+        otherState: 'some other values',
+        showPersons: false
     }
 
-    switchNameHandler = (newName) => {
-        // console.log("Was clicked");
-        this.setState({
-            persons: [
-                { name: newName, age: 20 },
-                { name: 'Ibrahim', age: 25 },
-                { name: 'James', age: 100 }
-            ]
+    nameChangedHandler = (event, id) => {
+        const personIndex = this.state.persons.findIndex(p => {
+            return p.id === id
         })
+        const person = {
+            ...this.state.persons[personIndex]
+        // or const person = object.assign({}, this.state.persons[personIndex])
+        }
+        person.name = event.target.value;
+
+        const persons = [...this.state.persons]
+        persons[personIndex] = person
+
+        this.setState({persons: persons})
     }
 
-    nameChangedHandler = (event) => {
-        this.setState({
-            persons: [
-                { name: 'Inyang Ernest', age: 20 },
-                { name: 'Ibrahim', age: 25 },
-                { name: event.target.value, age: 26 }
-            ]
-        })
+
+    deletePersonHandler = (personIndex) => {
+        // const persons = this.state.persons.slice()
+        const persons = [ ...this.state.persons]
+        persons.splice(personIndex, 1)
+        this.setState({persons: persons})
     }
 
-  render() {
+    togglePersonHandler = () => {
+        const doesShow = this.state.showPersons
+        this.setState({showPersons: !doesShow});
+
+    }
+
+
+
+    render() {
+
+
+
+        let persons = null;
+        if (this.state.showPersons) {
+            persons = (
+                <div>
+                    {this.state.persons.map((person, index)  => {
+                        return <Person
+                            click={this.deletePersonHandler.bind(this, index)}
+                            name={person.name}
+                            age={person.age}
+                            key={person.id}
+                            changed={(event) => this.nameChangedHandler(event, person.id )} />
+                    })}
+                </div>
+            )
+        }
+
 
         const style = {
             backgroundColor: 'white',
@@ -41,31 +75,23 @@ class App extends Component {
             border: '1px solid blue',
             padding: '8px',
             cursor: 'pointer'
-      }
+        }
 
-    return (
-      <div className="App">
-          <h1>Hi, i am a React App!</h1>    <p>This is really working!</p>
-          <button
-              style={style}
-              onClick={() => this.switchNameHandler('Bad boy Timz')}>Switch Name</button>
-          <Person
-              name={this.state.persons[0].name}
-              age={this.state.persons[0].age}/>
-          <Person
-              name={this.state.persons[1].name}
-              age={this.state.persons[1].age} />
-          <Person
-              name={this.state.persons[2].name}
-              age={this.state.persons[2].age}
-              click={this.switchNameHandler.bind(this, 'Jacob')}
-              changed={this.nameChangedHandler} >Hobbies: dancing</Person>
-      </div>
+        return (
+            <div className="App">
+                <h1>Hi, i am a React app</h1>
 
-    );
+                <button
+                    onClick={this.togglePersonHandler}
+                    style={style}>submit
+                </button>
+                {persons}
 
-   // return React.createElement('div', {className: 'App'}, React.createElement('h1',null, 'This is a react project!!!'))
-  }
+
+
+            </div>
+        );
+    }
 }
 
 export default App;
