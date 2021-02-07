@@ -23,7 +23,6 @@ class App extends Component {
         })
         const person = {
             ...this.state.persons[personIndex]
-        // or const person = object.assign({}, this.state.persons[personIndex])
         }
         person.name = event.target.value;
 
@@ -60,6 +59,7 @@ class App extends Component {
 
                 <div className={classes.Cockpit}>
                     <Cockpit
+                        title={this.props.appTitle}
                         showPersons={this.state.showPersons}
                         persons={this.state.persons}
                         clicked={this.togglePersonHandler} />
